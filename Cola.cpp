@@ -1,273 +1,141 @@
+#include <iostream> // Libreria para entrada y salida de datos
+#include <string>   // Libreria para usar textos (string)
 
-#include <iostream>
-#include <string>
-#include <limits>
+using namespace std; // Evita escribir std:: antes de comandos como cout y cin
 
-using namespace std;
-
-// ===== ESTRUCTURA DEL NODO =====
-
-struct Nodo
+// Estructura que representa cada proceso o solicitud en la cola
+struct Proceso
 {
-    string nombre;
-    Nodo* siguiente;
+    int id;               // ID del proceso
+    string nombreHuesped; // Nombre del huesped
+    int habitacion;       // Numero de habitacion
+    string descripcion;   // Detalle del servicio solicitado
+    string estado;        // Estado actual (Pendiente, Atendido)
+    int prioridad;        // Nivel de urgencia (1: Alta, 2: Media, 3: Baja)
+    string fecha;         // Fecha y hora del registro
+
+    Proceso* siguiente;   // Puntero que apunta al siguiente nodo de la cola
 };
 
-// Punteros de la cola
-Nodo* frente = nullptr;
-Nodo* finalCola = nullptr;
+// Punteros globales para controlar el inicio y fin de la cola
+Proceso* frente = NULL; // Puntero al primer nodo de la cola (inicia vacio)
+Proceso* final = NULL;  // Puntero al ultimo nodo de la cola (inicia vacio)
 
-// ===== FUNCIONES =====
+// Declaracion de las funciones que usara el programa
+void encolarProceso();   // Agrega un nuevo proceso al final
+void atenderProceso();   // Procesa la solicitud al frente de la cola
+void desencolarProceso(); // Elimina la primera solicitud
+void mostrarCola();      // Muestra la lista de procesos pendientes
 
-void encolar()
-{
-    string nombre;
+// Funcion principal del programa
+int main() {
+    int opcion; // Variable para guardar la opcion elegida por el usuario
 
-    cout << "\nIngrese el nombre del cliente: ";
-    getline(cin, nombre);
+    // Bucle para repetir el menu hasta que el usuario elija salir
+    do {
+        cout << "\n========================================\n"; // Borde superior del menu
+        cout << "   MODULO DE ATENCION A SOLICITUDES     \n"; // Titulo del menu
+        cout << "             (FABRICIO - COLA)          \n"; // Nombre del autor
+        cout << "========================================\n"; // Separador visual
+        cout << "1. Registrar nueva solicitud (Encolar)\n";      // Texto de opcion 1[cite: 1, 2]
+        cout << "2. Atender solicitud actual (Atender)\n";      // Texto de opcion 2[cite: 1]
+        cout << "3. Eliminar primera solicitud (Desencolar)\n"; // Texto de opcion 3[cite: 1]
+        cout << "4. Ver cola de solicitudes pendientes\n";     // Texto de opcion 4[cite: 1]
+        cout << "5. Salir\n";                                   // Texto de opcion 5[cite: 1]
+        cout << "Seleccione una opcion: ";                      // Pide una seleccion al usuario
+        cin >> opcion;                                         // Lee y guarda la opcion ingresada
 
-    if (nombre.empty())
-    {
-        cout << "El nombre no puede estar vacio.\n";
-        return;
-    }
-
-    // Crear nuevo nodo dinamicamente
-    Nodo* nuevo = new Nodo;
-    nuevo->nombre = nombre;
-    nuevo->siguiente = nullptr;
-
-    // Si la cola esta vacia
-    if (frente == nullptr)
-    {
-        frente = nuevo;
-        finalCola = nuevo;
-    }
-    else
-    {
-        // Agregar al final de la cola
-        finalCola->siguiente = nuevo;
-        finalCola = nuevo;
-    }
-
-    cout << "Cliente agregado a la cola correctamente.\n";
-}
-
-void atenderCliente()
-{
-    if (frente == nullptr)
-    {
-        cout << "\nNo hay clientes en espera.\n";
-        return;
-    }
-
-    // Guardar el nodo que se eliminara
-    Nodo* auxiliar = frente;
-
-    cout << "\nAtendiendo al cliente: "
-         << auxiliar->nombre << endl;
-
-    // Avanzar el frente
-    frente = frente->siguiente;
-
-    // Si la cola queda vacia
-    if (frente == nullptr)
-    {
-        finalCola = nullptr;
-    }
-
-    // Liberar memoria
-    delete auxiliar;
-
-    cout << "Cliente atendido correctamente.\n";
-}
-
-void mostrarCola()
-{
-    if (frente == nullptr)
-    {
-        cout << "\nLa cola esta vacia.\n";
-        return;
-    }
-
-    Nodo* actual = frente;
-    int posicion = 1;
-
-    cout << "\n--- CLIENTES EN ESPERA ---\n";
-
-    while (actual != nullptr)
-    {
-        cout << posicion << ". "
-             << actual->nombre << endl;
-
-        actual = actual->siguiente;
-        posicion++;
-    }
-}
-
-void liberarCola()
-{
-    while (frente != nullptr)
-    {
-        Nodo* auxiliar = frente;
-        frente = frente->siguiente;
-        delete auxiliar;
-    }
-
-    finalCola = nullptr;
-}
-
-// ===== MENU DE ATENCION =====
-
-void menuCola()
-{
-    int opcion;
-
-    do
-    {
-        cout << "\n==============================\n";
-        cout << "       COLA DE ATENCION\n";
-        cout << "==============================\n";
-        cout << "1. Registrar cliente\n";
-        cout << "2. Atender cliente\n";
-        cout << "3. Mostrar cola\n";
-        cout << "0. Regresar al menu principal\n";
-        cout << "Seleccione una opcion: ";
-
-        if (!(cin >> opcion))
-        {
-            cin.clear();
-            cin.ignore(
-                numeric_limits<streamsize>::max(), '\n'
-            );
-            cout << "Opcion invalida.\n";
-            continue;
+        // Evalua la opcion ingresada por el usuario
+        switch (opcion) {
+            case 1: // Si eligio la opcion 1
+                encolarProceso(); // Llama a la funcion para encolar[cite: 2]
+                break;            // Sale del bloque switch
+            case 2: // Si eligio la opcion 2
+                atenderProceso(); // Llama a la funcion para atender
+                break;            // Sale del bloque switch
+            case 3: // Si eligio la opcion 3
+                desencolarProceso(); // Llama a la funcion para desencolar
+                break;               // Sale del bloque switch
+            case 4: // Si eligio la opcion 4
+                mostrarCola(); // Llama a la funcion para mostrar la cola
+                break;         // Sale del bloque switch
+            case 5: // Si eligio la opcion 5
+                cout << "\nSaliendo del modulo...\n"; // Mensaje de despedida
+                break;                                // Sale del bloque switch
+            default: // Si eligio una opcion fuera del menu
+                cout << "\nOpcion no valida, intenta de nuevo.\n"; // Mensaje de error
+                break;                                             // Sale del bloque switch
         }
+    } while (opcion != 5); // Continua ejecutandose mientras la opcion no sea 5
 
-        cin.ignore(
-            numeric_limits<streamsize>::max(), '\n'
-        );
-
-        switch (opcion)
-        {
-            case 1:
-                encolar();
-                break;
-
-            case 2:
-                atenderCliente();
-                break;
-
-            case 3:
-                mostrarCola();
-                break;
-
-            case 0:
-                cout << "Regresando al menu principal...\n";
-                break;
-
-            default:
-                cout << "Opcion incorrecta.\n";
-        }
-
-    } while (opcion != 0);
+    return 0; // Finaliza la ejecucion del programa correctamente
 }
 
-// ===== MENU PRINCIPAL =====
+// Funcion para agregar un proceso a la cola (siguiendo el diagrama de flujo)
+void encolarProceso() {
+    Proceso* NuevoNodo = new Proceso(); // Reserva espacio en memoria para el nuevo nodo[cite: 2]
 
-void menuPrincipal()
-{
-    int opcion;
+    cout << "\n--- REGISTRAR NUEVA SOLICITUD ---\n"; // Titulo del formulario
 
-    do
-    {
-        cout << "\n==============================\n";
-        cout << "       HOTEL ALOINKA\n";
-        cout << " SISTEMA DE GESTION DE PROCESOS\n";
-        cout << "==============================\n";
+    // ENTRADA: Recibir IDProceso
+    cout << "Ingrese el ID del Proceso: "; // Pide el ID del proceso en pantalla[cite: 2]
+    cin >> NuevoNodo->id;                  // Guarda el ID directamente en el nodo[cite: 2]
 
-        cout << "1. Registrar reserva\n";
-        cout << "2. Buscar reserva\n";
-        cout << "3. Modificar reserva\n";
-        cout << "4. Eliminar reserva\n";
-        cout << "5. Gestionar habitaciones\n";
-        cout << "6. Cola de atencion\n";
-        cout << "7. Historial de operaciones\n";
-        cout << "8. Guardar datos\n";
-        cout << "9. Cargar datos\n";
-        cout << "0. Salir\n";
-        cout << "Seleccione una opcion: ";
+    cin.ignore(); // Limpia el salto de linea del teclado
+    cout << "Nombre del huesped: "; // Pide el nombre del huesped
+    getline(cin, NuevoNodo->nombreHuesped); // Guarda la linea de texto completa con el nombre
 
-        if (!(cin >> opcion))
-        {
-            cin.clear();
-            cin.ignore(
-                numeric_limits<streamsize>::max(), '\n'
-            );
-            cout << "Opcion invalida.\n";
-            continue;
-        }
+    cout << "Numero de habitacion: "; // Pide el numero de habitacion
+    cin >> NuevoNodo->habitacion;      // Guarda el numero de habitacion
 
-        switch (opcion)
-        {
-            case 1:
-                cout << "\nRegistrar reserva\n";
-                break;
+    cin.ignore(); // Limpia el teclado para leer la siguiente frase
+    cout << "Descripcion del servicio: "; // Pide el detalle de la solicitud
+    getline(cin, NuevoNodo->descripcion); // Guarda la descripcion del servicio
 
-            case 2:
-                cout << "\nBuscar reserva\n";
-                break;
+    cout << "Prioridad (1: Alta, 2: Media, 3: Baja): "; // Pide la prioridad
+    cin >> NuevoNodo->prioridad;                         // Guarda el numero de prioridad
 
-            case 3:
-                cout << "\nModificar reserva\n";
-                break;
+    cin.ignore(); // Limpia el teclado antes de la ultima entrada de texto
+    cout << "Fecha y Hora: "; // Pide la fecha y hora
+    getline(cin, NuevoNodo->fecha); // Guarda el texto de la fecha y hora
 
-            case 4:
-                cout << "\nEliminar reserva\n";
-                break;
+    NuevoNodo->estado = "Pendiente"; // Define el estado por defecto como Pendiente
 
-            case 5:
-                cout << "\nGestion de habitaciones\n";
-                break;
+    // PROCESO: NuevoNodo -> siguiente = NULL
+    NuevoNodo->siguiente = NULL; // El nuevo nodo apunta a NULL porque ira al final[cite: 2]
 
-            case 6:
-                cin.ignore(
-                    numeric_limits<streamsize>::max(), '\n'
-                );
-                menuCola();
-                break;
+    // CONDICIONAL: ¿frente == NULL?
+    if (frente == NULL) { // Comprueba si la cola esta actualmente vacia[cite: 2]
+        // SI:
+        frente = NuevoNodo; // Apunta el puntero frente al nuevo nodo[cite: 2]
+        final = NuevoNodo;  // Apunta el puntero final al nuevo nodo[cite: 2]
+    } else {
+        // NO:
+        final->siguiente = NuevoNodo; // El nodo al final actual conecta su puntero al nuevo nodo[cite: 2]
+        final = NuevoNodo;            // El puntero final pasa a ser el nuevo nodo recién agregado[cite: 2]
+    }
 
-            case 7:
-                cout << "\nHistorial de operaciones\n";
-                break;
-
-            case 8:
-                cout << "\nDatos guardados\n";
-                break;
-
-            case 9:
-                cout << "\nDatos cargados\n";
-                break;
-
-            case 0:
-                cout << "\nCerrando sistema...\n";
-                break;
-
-            default:
-                cout << "\nOpcion incorrecta.\n";
-        }
-
-    } while (opcion != 0);
+    // SALIDA: Mostrar mensaje "Proceso encolado con exito"
+    cout << "\nProceso encolado con exito\n"; // Imprime exactamente el mensaje de exito del diagrama[cite: 2]
 }
 
-// ===== PROGRAMA PRINCIPAL =====
+// Funcion para atender y mostrar la solicitud al frente de la cola
+void atenderProceso() {
+    // Evalua si no hay elementos en la cola
+    if (frente == NULL) {
+        cout << "\n[!] No hay solicitudes pendientes por atender.\n"; // Muestra mensaje de cola vacia
+        return; // Sale de la funcion inmediatamente
+    }
 
-int main()
-{
-    menuPrincipal();
+    cout << "\n--- ATENDIENDO SOLICITUD EN FRENTE ---\n"; // Titulo del proceso
+    cout << "ID Solicitud  : " << frente->id << "\n";          // Imprime el ID del elemento del frente
+    cout << "Huesped       : " << frente->nombreHuesped << "\n"; // Imprime el nombre del huesped
+    cout << "Habitacion    : " << frente->habitacion << "\n";    // Imprime la habitacion
+    cout << "Descripcion   : " << frente->descripcion << "\n";   // Imprime el detalle del servicio
+    cout << "Fecha         : " << frente->fecha << "\n";         // Imprime la fecha de registro
 
-    // Liberar memoria dinamica antes de terminar
-    liberarCola();
+    frente->estado = "Atendido"; // Cambia el valor del estado a Atendido
+    cout << "Estado actual : " << frente->estado << "\n"; // Muestra la confirmacion de estado
 
-    return 0;
-}
+    cout << "\nSolicitud completada. Retirando de la cola...\n"; // Informa al usuario
+    desencolarProceso(); // Elimina el elemento
