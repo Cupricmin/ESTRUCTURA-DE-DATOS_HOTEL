@@ -27,65 +27,66 @@ Proceso* inicioLista = NULL;
 
 // FUNCIONES AUXILIARES DE VALIDACION
 // Leer un numero entero dentro de un rango
-int leerNumero(string mensaje, int minimo, int maximo)
+int leerNumero(string mensaje, int minimo, int maximo) // Define la función recibiendo el texto a mostrar y los límites numéricos
 {
-    int numero;
-    do
+    int numero; // Variable temporal para almacenar el valor ingresado por el usuario
+    do // Inicia el bucle que se repetirá mientras la entrada sea inválida o esté fuera de rango
     {
-        cout << mensaje;
-        if (!(cin >> numero))
+        cout << mensaje; // Imprime en consola la indicación (prompt) para el usuario
+        
+        if (!(cin >> numero)) // Evalúa si la lectura falló (ej. el usuario ingresó letras en lugar de números)
         {
-            cout << "Error: ingrese un numero valido.\n";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            numero = minimo - 1;
+            cout << "Error: ingrese un numero valido.\n"; // Muestra mensaje de error por tipo de dato incorrecto
+            cin.clear(); // Limpia la bandera de error (failbit) del flujo cin para permitir nuevas lecturas
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Descarta todo el texto inválido que quedó en el búfer
+            numero = minimo - 1; // Asigna un valor fuera de rango para garantizar que la condición del do-while siga siendo verdadera
         }
-        else if (numero < minimo || numero > maximo)
+        else if (numero < minimo || numero > maximo) // Evalúa si el número es correcto pero está fuera de los límites permitidos
         {
-            cout << "Error: ingrese un numero entre "
+            cout << "Error: ingrese un numero entre " // Muestra mensaje de error especificando el rango aceptado
                  << minimo << " y " << maximo << ".\n";
         }
+    } while (numero < minimo || numero > maximo); // Repite el proceso si el número no está en el rango [minimo, maximo]
 
-    } while (numero < minimo || numero > maximo);
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    return numero;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpia el salto de línea ('\n') restante para no afectar lecturas de texto (getline)
+    return numero; // Devuelve el número entero completamente validado
 }
 
 
 // Leer texto y validar si contiene solo letras
-string leerTextoValido(string mensaje, bool soloLetras)
+string leerTextoValido(string mensaje, bool soloLetras) // Declara la función recibiendo el mensaje indicativo y la bandera de validación de letras
 {
-    string texto;
-    bool valido;
-    do
+    string texto; // Variable para almacenar la cadena ingresada por el usuario
+    bool valido; // Bandera de control para gestionar la repetición del bucle de validación
+
+    do // Inicia el bucle que se repetirá hasta que la entrada cumpla con todas las condiciones
     {
-        valido = true;
-        cout << mensaje;
-        getline(cin, texto);
-        
-        if (texto.empty())
+        valido = true; // Asume inicialmente que el texto es válido al comenzar cada intento
+        cout << mensaje; // Imprime en consola la indicación o prompt para el usuario
+        getline(cin, texto); // Lee la línea completa de texto desde la consola, incluyendo espacios
+
+        if (texto.empty()) // Evalúa si la cadena está vacía,  el usuario solo presionó la tecla Enter
         {
-            cout << "Error: el campo no puede estar vacio.\n";
-            valido = false;
+            cout << "Error: el campo no puede estar vacio.\n"; // Muestra el mensaje de error por campo no completado
+            valido = false; // Marca la entrada como no válida para forzar la repetición del bucle
         }
-        else if (soloLetras)
+        else if (soloLetras) // Evalúa si está activada la restricción de permitir únicamente letras y espacios
         {
-            for (int i = 0; i < texto.length(); i++)
+            for (int i = 0; i < texto.length(); i++) // Recorre la cadena carácter por carácter desde la posición 0 hasta el final
             {
-                char letra = texto[i];
-                if (!((letra >= 'A' && letra <= 'Z') ||
-                      (letra >= 'a' && letra <= 'z') ||
-                      letra == ' '))
+                char letra = texto[i]; // Extrae y guarda el carácter actual para su posterior inspección
+                if (!((letra >= 'A' && letra <= 'Z') || // Comprueba si el carácter NO es una letra mayúscula,
+                      (letra >= 'a' && letra <= 'z') || // NI una letra minúscula,
+                      letra == ' '))                   // NI un espacio en blanco
                 {
-                    cout << "Error: ingrese solo letras y espacios.\n";
-                    valido = false;
-                    break;
+                    cout << "Error: ingrese solo letras y espacios.\n"; // Muestra el mensaje de error por carácter no permitido
+                    valido = false; // Marca la entrada como no válida
+                    break; // Interrumpe inmediatamente el bucle for al detectar el primer carácter no permitido
                 }
             }
         }
-
-    } while (!valido);
-    return texto;
+    } while (!valido); // Repite el proceso do-while mientras la variable valido sea false
+    return texto; // Retorna la cadena de texto completamente validada
 }
 
 
