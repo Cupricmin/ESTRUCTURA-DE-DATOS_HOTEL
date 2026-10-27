@@ -33,15 +33,14 @@ int main() {
 
     // Bucle para repetir el menu hasta que el usuario elija salir
     do {
-        cout << "\n========================================\n"; // Borde superior del menu
-        cout << "   MODULO DE ATENCION A SOLICITUDES     \n"; // Titulo del menu
-        cout << "             (FABRICIO - COLA)          \n"; // Nombre del autor
-        cout << "========================================\n"; // Separador visual
-        cout << "1. Registrar nueva solicitud (Encolar)\n";      // Texto de opcion 1[cite: 1, 2]
-        cout << "2. Atender solicitud actual (Atender)\n";      // Texto de opcion 2[cite: 1]
-        cout << "3. Eliminar primera solicitud (Desencolar)\n"; // Texto de opcion 3[cite: 1]
-        cout << "4. Ver cola de solicitudes pendientes\n";     // Texto de opcion 4[cite: 1]
-        cout << "5. Salir\n";                                   // Texto de opcion 5[cite: 1]
+        cout << "\n========================================\n"; 
+        cout << "   MODULO DE ATENCION A SOLICITUDES     \n"; 
+        cout << "========================================\n"; 
+        cout << "1. Registrar nueva solicitud (Encolar)\n";      
+        cout << "2. Atender solicitud actual (Atender)\n";      
+        cout << "3. Eliminar primera solicitud (Desencolar)\n"; 
+        cout << "4. Ver cola de solicitudes pendientes\n";     
+        cout << "5. Salir\n";                                   
         cout << "Seleccione una opcion: ";                      // Pide una seleccion al usuario
         cin >> opcion;                                         // Lee y guarda la opcion ingresada
 
