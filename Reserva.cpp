@@ -25,19 +25,14 @@ struct Proceso
 Proceso* inicioLista = NULL;
 
 
-// ==========================================
 // FUNCIONES AUXILIARES DE VALIDACION
-// ==========================================
-
 // Leer un numero entero dentro de un rango
 int leerNumero(string mensaje, int minimo, int maximo)
 {
     int numero;
-
     do
     {
         cout << mensaje;
-
         if (!(cin >> numero))
         {
             cout << "Error: ingrese un numero valido.\n";
@@ -52,9 +47,7 @@ int leerNumero(string mensaje, int minimo, int maximo)
         }
 
     } while (numero < minimo || numero > maximo);
-
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
     return numero;
 }
 
@@ -64,13 +57,12 @@ string leerTextoValido(string mensaje, bool soloLetras)
 {
     string texto;
     bool valido;
-
     do
     {
         valido = true;
         cout << mensaje;
         getline(cin, texto);
-
+        
         if (texto.empty())
         {
             cout << "Error: el campo no puede estar vacio.\n";
@@ -81,7 +73,6 @@ string leerTextoValido(string mensaje, bool soloLetras)
             for (int i = 0; i < texto.length(); i++)
             {
                 char letra = texto[i];
-
                 if (!((letra >= 'A' && letra <= 'Z') ||
                       (letra >= 'a' && letra <= 'z') ||
                       letra == ' '))
@@ -94,7 +85,6 @@ string leerTextoValido(string mensaje, bool soloLetras)
         }
 
     } while (!valido);
-
     return texto;
 }
 
@@ -103,12 +93,10 @@ string leerTextoValido(string mensaje, bool soloLetras)
 Proceso* buscarPorID(int id)
 {
     Proceso* actual = inicioLista;
-
     while (actual != NULL)
     {
         if (actual->id == id)
             return actual;
-
         actual = actual->siguiente;
     }
 
@@ -125,7 +113,6 @@ void mostrarReserva(Proceso* reserva)
     cout << "Habitacion: " << reserva->habitacion << endl;
     cout << "Descripcion: " << reserva->descripcion << endl;
     cout << "Estado: " << reserva->estado << endl;
-
     cout << "Prioridad: ";
 
     switch (reserva->prioridad)
@@ -134,19 +121,15 @@ void mostrarReserva(Proceso* reserva)
         case 2: cout << "Media"; break;
         case 3: cout << "Baja"; break;
     }
-
     cout << endl;
     cout << "Fecha: " << reserva->fecha << endl;
 }
 
 
-// ==========================================
 // 1. REGISTRAR RESERVA
-// ==========================================
 void insertarProceso()
 {
     cout << "\n--- REGISTRAR RESERVA ---\n";
-
     int id;
     Proceso* encontrado;
 
@@ -155,7 +138,6 @@ void insertarProceso()
     {
         id = leerNumero("Ingrese ID: ", 1, 1000000);
         encontrado = buscarPorID(id);
-
         if (encontrado != NULL)
             cout << "Error: el ID ya existe.\n";
 
@@ -166,24 +148,19 @@ void insertarProceso()
 
     nuevo->nombreHuesped =
         leerTextoValido("Nombre del huesped: ", true);
-
     nuevo->habitacion =
         leerNumero("Numero de habitacion (1 a 28): ", 1, 28);
-
     nuevo->descripcion =
         leerTextoValido("Descripcion: ", false);
-
     nuevo->estado = "Pendiente";
-
     nuevo->prioridad =
         leerNumero("Prioridad (1-Alta, 2-Media, 3-Baja): ", 1, 3);
-
     nuevo->fecha =
         leerTextoValido("Fecha (AAAA-MM-DD): ", false);
 
     // Insertar al final de la lista
     nuevo->siguiente = NULL;
-
+    
     if (inicioLista == NULL)
     {
         inicioLista = nuevo;
@@ -191,10 +168,8 @@ void insertarProceso()
     else
     {
         Proceso* actual = inicioLista;
-
         while (actual->siguiente != NULL)
             actual = actual->siguiente;
-
         actual->siguiente = nuevo;
     }
 
@@ -202,22 +177,17 @@ void insertarProceso()
 }
 
 
-// ==========================================
 // 2. BUSCAR RESERVA POR ID
-// ==========================================
 void buscarProcesoID()
 {
     cout << "\n--- BUSCAR RESERVA POR ID ---\n";
-
     if (inicioLista == NULL)
     {
         cout << "No hay reservas registradas.\n";
         return;
     }
 
-    int id = leerNumero("Ingrese el ID de la reserva: ",
-                        1, 1000000);
-
+    int id = leerNumero("Ingrese el ID de la reserva: ", 1, 1000000);
     Proceso* reserva = buscarPorID(id);
 
     if (reserva != NULL)
@@ -227,9 +197,7 @@ void buscarProcesoID()
 }
 
 
-// ==========================================
 // 3. BUSCAR RESERVA POR NOMBRE
-// ==========================================
 void buscarProcesoNombre()
 {
     cout << "\n--- BUSCAR RESERVA POR NOMBRE ---\n";
@@ -239,7 +207,6 @@ void buscarProcesoNombre()
         cout << "No hay reservas registradas.\n";
         return;
     }
-
     string nombre = leerTextoValido(
         "Ingrese el nombre del huesped: ", true
     );
@@ -263,22 +230,17 @@ void buscarProcesoNombre()
 }
 
 
-// ==========================================
 // 4. MODIFICAR RESERVA
-// ==========================================
 void modificarProceso()
 {
     cout << "\n--- MODIFICAR RESERVA ---\n";
-
     if (inicioLista == NULL)
     {
         cout << "No hay reservas registradas.\n";
         return;
     }
 
-    int id = leerNumero("Ingrese el ID de la reserva: ",
-                        1, 1000000);
-
+    int id = leerNumero("Ingrese el ID de la reserva: ", 1, 1000000);
     Proceso* reserva = buscarPorID(id);
 
     if (reserva == NULL)
@@ -289,48 +251,36 @@ void modificarProceso()
 
     cout << "\nReserva encontrada.\n";
     mostrarReserva(reserva);
-
     reserva->nombreHuesped =
         leerTextoValido("Nuevo nombre del huesped: ", true);
-
     reserva->habitacion =
         leerNumero("Nueva habitacion (1 a 28): ", 1, 28);
-
     reserva->descripcion =
         leerTextoValido("Nueva descripcion: ", false);
-
     reserva->prioridad =
-        leerNumero("Nueva prioridad (1-Alta, 2-Media, 3-Baja): ",
-                   1, 3);
-
+        leerNumero("Nueva prioridad (1-Alta, 2-Media, 3-Baja): ", 1, 3);
     reserva->fecha =
         leerTextoValido("Nueva fecha (AAAA-MM-DD): ", false);
-
     cout << "\nReserva modificada correctamente.\n";
 }
 
 
-// ==========================================
 // 5. ELIMINAR RESERVA
-// ==========================================
 void eliminarProceso()
 {
     cout << "\n--- ELIMINAR RESERVA ---\n";
-
     if (inicioLista == NULL)
     {
         cout << "No hay reservas registradas.\n";
         return;
     }
-
     int id = leerNumero(
         "Ingrese el ID de la reserva que desea eliminar: ",
         1, 1000000
     );
-
     Proceso* actual = inicioLista;
     Proceso* anterior = NULL;
-
+    
     // Buscar el nodo que se desea eliminar
     while (actual != NULL && actual->id != id)
     {
@@ -343,7 +293,6 @@ void eliminarProceso()
         cout << "No existe una reserva con ese ID.\n";
         return;
     }
-
     mostrarReserva(actual);
 
     // Desconectar el nodo de la lista
@@ -357,25 +306,19 @@ void eliminarProceso()
     cout << "\nReserva eliminada correctamente.\n";
 }
 
-
-// ==========================================
 // 6. CAMBIAR ESTADO DE RESERVA
-// ==========================================
 void cambiarEstado()
 {
     cout << "\n--- CAMBIAR ESTADO DE RESERVA ---\n";
-
     if (inicioLista == NULL)
     {
         cout << "No hay reservas registradas.\n";
         return;
     }
 
-    int id = leerNumero("Ingrese el ID de la reserva: ",
-                        1, 1000000);
+    int id = leerNumero("Ingrese el ID de la reserva: ", 1, 1000000);
 
     Proceso* reserva = buscarPorID(id);
-
     if (reserva == NULL)
     {
         cout << "No existe una reserva con ese ID.\n";
@@ -384,7 +327,6 @@ void cambiarEstado()
 
     cout << "\nHuesped: " << reserva->nombreHuesped << endl;
     cout << "Estado actual: " << reserva->estado << endl;
-
     cout << "\nSeleccione el nuevo estado:\n";
     cout << "1. Pendiente\n";
     cout << "2. En proceso\n";
