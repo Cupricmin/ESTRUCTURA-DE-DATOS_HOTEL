@@ -1,0 +1,118 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+
+// ===== ESTRUCTURA DEL NODO DE LA PILA =====
+
+// Representa una operación realizada dentro del sistema.
+struct NodoPila
+{
+    string operacion; // Guarda el nombre de la operación realizada.
+
+    NodoPila* siguiente; // Apunta al siguiente nodo de la pila.
+};
+
+
+// Puntero que indica la cima actual de la pila.
+NodoPila* cima = NULL;
+
+
+// ===== FUNCIONES DE LA PILA =====
+
+void apilar(string accion);
+void desapilar();
+void mostrarHistorial();
+
+
+// ===== AGREGAR UNA OPERACIÓN A LA PILA =====
+
+// Guarda una nueva operación en la cima de la pila.
+void apilar(string accion)
+{
+    NodoPila* nuevo = new NodoPila(); 
+    // Reserva memoria para crear un nuevo nodo.
+
+    nuevo->operacion = accion;
+    // Guarda el texto de la operación realizada.
+
+    nuevo->siguiente = cima;
+    // El nuevo nodo apunta al nodo que antes era la cima.
+
+    cima = nuevo;
+    // Actualiza la cima para que sea el nuevo nodo.
+
+    cout << "\nOperacion guardada en historial.\n";
+}
+
+
+
+// ===== ELIMINAR ULTIMA OPERACION =====
+
+// Retira la operación más reciente de la pila.
+void desapilar()
+{
+
+    if(cima == NULL)
+    {
+        cout << "\nNo hay operaciones en el historial.\n";
+        return;
+    }
+
+
+    NodoPila* auxiliar = cima;
+    // Guarda temporalmente el nodo que será eliminado.
+
+
+    cout << "\nOperacion eliminada: "
+         << auxiliar->operacion << endl;
+    // Muestra la operación retirada.
+
+
+    cima = cima->siguiente;
+    // Mueve la cima al siguiente nodo.
+
+
+    delete auxiliar;
+    // Libera la memoria del nodo eliminado.
+
+}
+
+
+
+// ===== MOSTRAR HISTORIAL =====
+
+// Muestra todas las operaciones almacenadas.
+void mostrarHistorial()
+{
+
+    if(cima == NULL)
+    {
+        cout << "\nHistorial vacio.\n";
+        return;
+    }
+
+
+    NodoPila* actual = cima;
+    // Crea un puntero auxiliar desde la cima.
+
+
+    cout << "\n==============================\n";
+    cout << " HISTORIAL DE OPERACIONES\n";
+    cout << "==============================\n";
+
+
+    while(actual != NULL)
+    {
+        cout << "- " 
+             << actual->operacion 
+             << endl;
+        // Muestra la operación actual.
+
+
+        actual = actual->siguiente;
+        // Avanza al siguiente nodo.
+    }
+
+}
