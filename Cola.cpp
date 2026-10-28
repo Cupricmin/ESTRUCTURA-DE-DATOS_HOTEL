@@ -33,14 +33,14 @@ int main() {
 
     // Bucle para repetir el menu hasta que el usuario elija salir
     do {
-        cout << "\n========================================\n"; 
-        cout << "   MODULO DE ATENCION A SOLICITUDES     \n"; 
-        cout << "========================================\n"; 
-        cout << "1. Registrar nueva solicitud (Encolar)\n";      
-        cout << "2. Atender solicitud actual (Atender)\n";      
-        cout << "3. Eliminar primera solicitud (Desencolar)\n"; 
-        cout << "4. Ver cola de solicitudes pendientes\n";     
-        cout << "5. Salir\n";                                   
+        cout << "\n========================================\n"; // Borde superior del menu
+        cout << "   MODULO DE ATENCION A SOLICITUDES     \n"; // Titulo del menu
+        cout << "========================================\n"; // Separador visual
+        cout << "1. Registrar nueva solicitud (Encolar)\n";      // Texto de opcion 1[cite: 1, 2]
+        cout << "2. Atender solicitud actual (Atender)\n";      // Texto de opcion 2[cite: 1]
+        cout << "3. Eliminar primera solicitud (Desencolar)\n"; // Texto de opcion 3[cite: 1]
+        cout << "4. Ver cola de solicitudes pendientes\n";     // Texto de opcion 4[cite: 1]
+        cout << "5. Salir\n";                                   // Texto de opcion 5[cite: 1]
         cout << "Seleccione una opcion: ";                      // Pide una seleccion al usuario
         cin >> opcion;                                         // Lee y guarda la opcion ingresada
 
@@ -137,4 +137,56 @@ void atenderProceso() {
     cout << "Estado actual : " << frente->estado << "\n"; // Muestra la confirmacion de estado
 
     cout << "\nSolicitud completada. Retirando de la cola...\n"; // Informa al usuario
-    desencolarProceso(); // Elimina el elemento
+    desencolarProceso(); // Elimina el elemento recién atendido de la cola
+}
+
+// Funcion para eliminar el primer nodo de la cola
+void desencolarProceso() {
+    // Revisa si la cola esta vacia antes de intentar eliminar
+    if (frente == NULL) {
+        cout << "\n[!] La cola esta vacia, no hay nada que eliminar.\n"; // Avisa que no hay datos
+        return; // Cancela la ejecucion de la funcion
+    }
+
+    Proceso* aux = frente; // Copia la direccion del nodo del frente en un auxiliar
+    frente = frente->siguiente; // Mueve el puntero frente al siguiente nodo de la fila
+
+    // Si al mover el frente la cola queda sin elementos
+    if (frente == NULL) {
+        final = NULL; // Establece el puntero final tambien en NULL
+    }
+
+    cout << "\n[!] Proceso ID #" << aux->id << " eliminado de la cola.\n"; // Muestra la confirmacion de borrado
+    delete aux; // Borra de la memoria RAM el nodo guardado en el auxiliar
+}
+
+// Funcion para imprimir en pantalla toda la cola de procesos
+void mostrarCola() {
+    // Verifica si existen elementos para mostrar
+    if (frente == NULL) {
+        cout << "\n[!] La cola esta vacia.\n"; // Informa que no hay nodos
+        return; // Termina la funcion
+    }
+
+    Proceso* actual = frente; // Crea un puntero auxiliar empezando desde el frente
+    int turno = 1;            // Inicializa un contador para el numero de turno
+
+    cout << "\n========================================\n"; // Decoracion visual
+    cout << "     SOLICITUDES PENDIENTES EN COLA     \n"; // Titulo del reporte
+    cout << "========================================\n"; // Decoracion visual
+
+    // Recorre cada uno de los nodos hasta que el puntero sea NULL
+    while (actual != NULL) {
+        cout << "Turno #" << turno << " | ID #" << actual->id << "\n"; // Muestra turno e ID
+        cout << "  - Huesped    : " << actual->nombreHuesped << "\n";     // Imprime el nombre del huesped
+        cout << "  - Habitacion : " << actual->habitacion << "\n";        // Imprime la habitacion
+        cout << "  - Servicio   : " << actual->descripcion << "\n";       // Imprime el servicio
+        cout << "  - Prioridad  : " << actual->prioridad << "\n";         // Imprime el nivel de prioridad
+        cout << "  - Fecha      : " << actual->fecha << "\n";             // Imprime la fecha
+        cout << "  - Estado     : " << actual->estado << "\n";            // Imprime el estado del proceso
+        cout << "----------------------------------------\n";             // Linea divisoria
+
+        actual = actual->siguiente; // Avanza el puntero auxiliar al nodo subsiguiente
+        turno++;                    // Incrementa en 1 el contador de turno
+    }
+}
